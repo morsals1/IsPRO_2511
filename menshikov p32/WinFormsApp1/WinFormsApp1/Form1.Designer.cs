@@ -36,6 +36,8 @@
             label1 = new Label();
             label2 = new Label();
             pictureBox1 = new PictureBox();
+            textBox3 = new TextBox();
+            label3 = new Label();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -113,11 +115,30 @@
             pictureBox1.TabIndex = 7;
             pictureBox1.TabStop = false;
             // 
+            // textBox3
+            // 
+            textBox3.Location = new Point(12, 283);
+            textBox3.Name = "textBox3";
+            textBox3.Size = new Size(195, 23);
+            textBox3.TabIndex = 8;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
+            label3.Location = new Point(12, 255);
+            label3.Name = "label3";
+            label3.Size = new Size(87, 25);
+            label3.TabIndex = 9;
+            label3.Text = "Телефон";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(384, 450);
+            Controls.Add(label3);
+            Controls.Add(textBox3);
             Controls.Add(pictureBox1);
             Controls.Add(label2);
             Controls.Add(label1);
@@ -143,5 +164,7 @@
         private Label label1;
         private Label label2;
         private PictureBox pictureBox1;
+        private TextBox textBox3;
+        private Label label3;
     }
 }

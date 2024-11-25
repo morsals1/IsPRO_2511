@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.IO;
+using Microsoft.VisualBasic.ApplicationServices;
 
 namespace WinFormsApp1
 {
@@ -33,8 +34,57 @@ namespace WinFormsApp1
         {
             if (textBox1.Text != null && textBox2.Text != null) 
             {
-                string alltext = textBox1.Text + " " + textBox2.Text;
-                File.AppendAllText("Users.txt", alltext);
+                string alltext = textBox1.Text + " " + textBox2.Text + " " + textBox3.Text + "\n";
+                if(who == true)
+                {
+                    if (File.Exists("Users.txt"))
+                    {
+                        string fileText = File.ReadAllText("Users.txt");
+                        if (fileText.IndexOf(textBox1.Text) != -1 || fileText.IndexOf(textBox3.Text) != -1)
+                        {
+                            RegBut.Text = "Войти";
+                            if (fileText.Contains(alltext))
+                            {
+                                MessageBox.Show("вы вошли");
+                            }
+                            else
+                            {
+                                MessageBox.Show("не верный логин, праоль или телефон");
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Новый пользователь сохранен");
+                            File.AppendAllText("Users.txt", alltext);
+                        }
+                    }
+                }
+                else if (who == false) 
+                {
+                    if (File.Exists("Dealers.txt"))
+                    {
+                        string fileText = File.ReadAllText("Dealers.txt");
+                        if (fileText.IndexOf(textBox1.Text) != -1 || fileText.IndexOf(textBox3.Text) != -1)
+                        {
+                            RegBut.Text = "Войти";
+                            if (fileText.Contains(alltext))
+                            {
+                                MessageBox.Show("вы вошли");
+                            }
+                            else
+                            {
+                                MessageBox.Show("не верный логин, праоль или телефон");
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Новый пользователь сохранен");
+                            File.AppendAllText("Dealers.txt", alltext);
+                        }
+                    }
+                }
+
+
             }
         }
     }
