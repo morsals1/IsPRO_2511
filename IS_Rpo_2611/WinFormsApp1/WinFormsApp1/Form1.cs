@@ -126,7 +126,16 @@ namespace WinFormsApp1
                 string inputPassword = textBox2.Text.Trim();
                 string alltext = inputEmail + " " + inputPassword + "\n";
 
-                string fileName = who ? "Users.txt" : "Dealers.txt";
+                string fileName = "no.txt";
+
+                if (dealerCh == true) 
+                {
+                    fileName = "Dealers.txt";
+                }
+                else if (userCh == true) 
+                {
+                    fileName = "Users.txt";
+                }
 
                 if (File.Exists(fileName))
                 {

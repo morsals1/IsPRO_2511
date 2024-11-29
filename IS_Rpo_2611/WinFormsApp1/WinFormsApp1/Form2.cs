@@ -7,55 +7,44 @@ namespace WinFormsApp1
 {
     public partial class Form2 : Form
     {
-        private List<Product> products;
-        private bool who1;
+        private bool _dealerCh;
+        private bool _userCh;
+
         public Form2(bool dealerCh, bool userCh)
         {
             InitializeComponent();
-
-            products = new List<Product>
-            {
-                new Product { Name = "Помидор", Price = 10, Quantity = 100, Manufacturer = "ООО 1" },
-                new Product { Name = "Огурец", Price = 15, Quantity = 85, Manufacturer = "ООО 2" },
-                new Product { Name = "Картофель", Price = 5, Quantity = 150, Manufacturer = "ООО 3" },
-                new Product { Name = "Морковь", Price = 20, Quantity = 45, Manufacturer = "ООО 4" }
-            };
-            who1 = who;
+            LoadProducts();
+            _dealerCh = dealerCh;
+            _userCh = userCh;
         }
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            LoadCatalog();
-        }
-
-        private void LoadCatalog()
-        {
-            catalogPanel.Controls.Clear();
-
-            foreach (var product in products)
+            if(_userCh == true) 
             {
-                var panel = new Panel
-                {
-                    Width = 200,
-                    Height = 100,
-                    BorderStyle = BorderStyle.FixedSingle
-                };
-
-                var nameLabel = new Label { Text = product.Name, Dock = DockStyle.Top };
-                var priceLabel = new Label { Text = $"Цена: {product.Price} руб.", Dock = DockStyle.Top };
-                var quantityLabel = new Label { Text = $"Кол-во: {product.Quantity}", Dock = DockStyle.Top };
-
-                panel.Controls.Add(quantityLabel);
-                panel.Controls.Add(priceLabel);
-                panel.Controls.Add(nameLabel);
-
-                catalogPanel.Controls.Add(panel);
+                tabFin.Parent = null;
+                tabOrder.Parent = null;
+                tabSklad.Parent = null;
+                tabBaslet.Parent = tabControl1;
+                tabPayment.Parent = tabControl1;
+                tabPersonal.Parent = tabControl1;
+                butAdd.Visible = false;
+            }
+            else if (_dealerCh == true) 
+            {
+                tabFin.Parent = tabControl1;
+                tabOrder.Parent = tabControl1;
+                tabSklad.Parent = tabControl1;
+                tabBaslet.Parent = null;
+                tabPayment.Parent = null;
+                tabPersonal.Parent = null;
+                butAdd.Visible = true;
             }
         }
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            if(tabControl1.SelectedTab == tabOrder) 
+            if (tabControl1.SelectedTab == tabOrder)
             {
                 var lines = new List<string>();
 
@@ -76,17 +65,49 @@ namespace WinFormsApp1
             }
             if (tabControl1.SelectedTab == tabSklad)
             {
+                var lines = new List<string>();
+
+                foreach (DataGridViewRow row in skladDataGridView.Rows)
+                {
+                    if (row.Cells[0].Value == null) continue;
+
+                    var id = row.Cells[0].Value.ToString();
+                    var name = row.Cells[1].Value.ToString();
+                    var quantity = row.Cells[2].Value.ToString();
+                    var point = row.Cells[3].Value.ToString();
+                    var depot = row.Cells[4].Value.ToString();
+                    var transport = row.Cells[5].Value.ToString();
+
+                    lines.Add($"{id},{name},{quantity},{point}, {depot}, {transport}");
+                }
+
+                File.WriteAllLines("orders.txt", lines);
                 MessageBox.Show("Данные сохранены в файл sklad.txt!");
             }
-            if(tabControl1.SelectedTab == tabFin)
+            if (tabControl1.SelectedTab == tabFin)
             {
+                var lines = new List<string>();
+
+                foreach (DataGridViewRow row in phinDataGridView.Rows)
+                {
+                    if (row.Cells[0].Value == null) continue;
+
+                    var id = row.Cells[0].Value.ToString();
+                    var name = row.Cells[1].Value.ToString();
+                    var quantity = row.Cells[2].Value.ToString();
+                    var summ = row.Cells[3].Value.ToString();
+
+                    lines.Add($"{id},{name},{quantity},{summ}");
+                }
+
+                File.WriteAllLines("orders.txt", lines);
                 MessageBox.Show("Данные сохранены в файл fin.txt!");
             }
         }
 
         private void loadButton_Click(object sender, EventArgs e)
         {
-            if(tabControl1.SelectedTab == tabOrder) 
+            if (tabControl1.SelectedTab == tabOrder)
             {
                 if (!File.Exists("orders.txt"))
                 {
@@ -109,25 +130,149 @@ namespace WinFormsApp1
 
                 MessageBox.Show("Данные загружены из файла orders.txt!");
             }
-            if(tabControl1.SelectedTab == tabSklad) 
+            if (tabControl1.SelectedTab == tabSklad)
             {
+                if (!File.Exists("sklad.txt"))
+                {
+                    MessageBox.Show("Файл не найден!");
+                    return;
+                }
+
+                var lines = File.ReadAllLines("sklad.txt");
+                skladDataGridView.Rows.Clear();
+
+                foreach (var line in lines)
+                {
+                    var parts = line.Split(',');
+
+                    if (parts.Length == 6)
+                    {
+                        skladDataGridView.Rows.Add(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]);
+                    }
+                }
+
                 MessageBox.Show("Данные загружены из файла sklad.txt!");
             }
-            if(tabControl1.SelectedTab == tabFin) 
+            if (tabControl1.SelectedTab == tabFin)
             {
+                if (!File.Exists("fin.txt"))
+                {
+                    MessageBox.Show("Файл не найден!");
+                    return;
+                }
+
+                var lines = File.ReadAllLines("fin.txt");
+                phinDataGridView.Rows.Clear();
+
+                foreach (var line in lines)
+                {
+                    var parts = line.Split(',');
+
+                    if (parts.Length == 4)
+                    {
+                        phinDataGridView.Rows.Add(parts[0], parts[1], parts[2], parts[3]);
+                    }
+                }
+
                 MessageBox.Show("Данные загружены из файла fin.txt!");
             }
 
         }
-    }
+
+        private void butAdd_Click(object sender, EventArgs e)
+        {
+            FormMiniAdd miniAdd = new FormMiniAdd();
+            miniAdd.ShowDialog();
+
+            LoadProducts();
+        }
+
+        private void LoadProducts()
+        {
+            string filePath = "products.txt";
+            if (System.IO.File.Exists(filePath))
+            {
+                string[] products = System.IO.File.ReadAllLines(filePath);
+                catalogPanel.Controls.Clear();
+
+                foreach (var product in products)
+                {
+                    string[] details = product.Split(',');
+                    if (details.Length < 5) continue;
+
+                    string imagePath = details[0];
+                    string name = details[1];
+                    string price = details[2];
+                    string quantity = details[3];
+                    string manufacturer = details[4];
+
+                    Panel productPanel = new Panel
+                    {
+                        BackColor = Color.LightGray,
+                        Size = new Size(250, 300),
+                        Margin = new Padding(5),
+                        BorderStyle = BorderStyle.FixedSingle
+                    };
 
 
-    public class Product
-    {
-        public PictureBox pic { get; set; }
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-        public int Quantity { get; set; }
-        public string Manufacturer { get; set; }
+                    PictureBox productImage = new PictureBox
+                    {
+                        Size = new Size(200, 150),
+                        Location = new Point(25, 10),
+                        SizeMode = PictureBoxSizeMode.StretchImage,
+                        BorderStyle = BorderStyle.FixedSingle
+                    };
+
+                    if (System.IO.File.Exists(imagePath))
+                    {
+                        productImage.Image = Image.FromFile(imagePath);
+                    }
+                    else
+                    {
+                        productImage.Image = SystemIcons.Error.ToBitmap();
+                    }
+
+                    Label nameLabel = new Label
+                    {
+                        Text = $"Название: {name}",
+                        AutoSize = true,
+                        Location = new Point(10, 170)
+                    };
+
+                    Label priceLabel = new Label
+                    {
+                        Text = $"Цена: {price}",
+                        AutoSize = true,
+                        Location = new Point(10, 200)
+                    };
+
+                    Label quantityLabel = new Label
+                    {
+                        Text = $"Кол-во: {quantity}",
+                        AutoSize = true,
+                        Location = new Point(10, 230)
+                    };
+
+                    Label manufacturerLabel = new Label
+                    {
+                        Text = $"Изготовитель: {manufacturer}",
+                        AutoSize = true,
+                        Location = new Point(10, 260)
+                    };
+
+                    productPanel.Controls.Add(productImage);
+                    productPanel.Controls.Add(nameLabel);
+                    productPanel.Controls.Add(priceLabel);
+                    productPanel.Controls.Add(quantityLabel);
+                    productPanel.Controls.Add(manufacturerLabel);
+
+                    catalogPanel.Controls.Add(productPanel);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Файл с продуктами не найден.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }

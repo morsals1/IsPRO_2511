@@ -30,6 +30,7 @@
         {
             tabControl1 = new TabControl();
             tabCat = new TabPage();
+            butAdd = new Button();
             catalogPanel = new FlowLayoutPanel();
             tabOrder = new TabPage();
             loadButton = new Button();
@@ -40,8 +41,9 @@
             Пункт_выдачи = new DataGridViewTextBoxColumn();
             Количество = new DataGridViewTextBoxColumn();
             tabSklad = new TabPage();
+            button3 = new Button();
             button1 = new Button();
-            dataGridView1 = new DataGridView();
+            skladDataGridView = new DataGridView();
             ColumnID = new DataGridViewTextBoxColumn();
             ColumnName = new DataGridViewTextBoxColumn();
             ColumnQuant = new DataGridViewTextBoxColumn();
@@ -49,22 +51,24 @@
             ColumnDepot = new DataGridViewTextBoxColumn();
             ColumnVehicle = new DataGridViewTextBoxColumn();
             tabFin = new TabPage();
+            button4 = new Button();
             button2 = new Button();
-            dataGridView2 = new DataGridView();
+            phinDataGridView = new DataGridView();
             ColumnIdPhin = new DataGridViewTextBoxColumn();
             ColumnNamePhin = new DataGridViewTextBoxColumn();
             ColumnQuantPhin = new DataGridViewTextBoxColumn();
             ColumnSummPhin = new DataGridViewTextBoxColumn();
-            button3 = new Button();
-            button4 = new Button();
+            tabBaslet = new TabPage();
+            tabPayment = new TabPage();
+            tabPersonal = new TabPage();
             tabControl1.SuspendLayout();
             tabCat.SuspendLayout();
             tabOrder.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ordersDataGridView).BeginInit();
             tabSklad.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)skladDataGridView).BeginInit();
             tabFin.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)phinDataGridView).BeginInit();
             SuspendLayout();
             // 
             // tabControl1
@@ -73,7 +77,10 @@
             tabControl1.Controls.Add(tabOrder);
             tabControl1.Controls.Add(tabSklad);
             tabControl1.Controls.Add(tabFin);
-            tabControl1.Dock = DockStyle.Top;
+            tabControl1.Controls.Add(tabBaslet);
+            tabControl1.Controls.Add(tabPayment);
+            tabControl1.Controls.Add(tabPersonal);
+            tabControl1.Dock = DockStyle.Fill;
             tabControl1.Location = new Point(0, 0);
             tabControl1.Margin = new Padding(3, 2, 3, 2);
             tabControl1.Name = "tabControl1";
@@ -83,6 +90,7 @@
             // 
             // tabCat
             // 
+            tabCat.Controls.Add(butAdd);
             tabCat.Controls.Add(catalogPanel);
             tabCat.Location = new Point(4, 24);
             tabCat.Margin = new Padding(3, 2, 3, 2);
@@ -93,11 +101,22 @@
             tabCat.Text = "Каталог";
             tabCat.UseVisualStyleBackColor = true;
             // 
+            // butAdd
+            // 
+            butAdd.Location = new Point(3, 0);
+            butAdd.Name = "butAdd";
+            butAdd.Size = new Size(178, 23);
+            butAdd.TabIndex = 1;
+            butAdd.Text = "добавить";
+            butAdd.UseVisualStyleBackColor = true;
+            butAdd.Click += butAdd_Click;
+            // 
             // catalogPanel
             // 
-            catalogPanel.Location = new Point(8, 5);
+            catalogPanel.Dock = DockStyle.Bottom;
+            catalogPanel.Location = new Point(3, 25);
             catalogPanel.Name = "catalogPanel";
-            catalogPanel.Size = new Size(676, 297);
+            catalogPanel.Size = new Size(686, 283);
             catalogPanel.TabIndex = 0;
             // 
             // tabOrder
@@ -167,7 +186,7 @@
             // 
             tabSklad.Controls.Add(button3);
             tabSklad.Controls.Add(button1);
-            tabSklad.Controls.Add(dataGridView1);
+            tabSklad.Controls.Add(skladDataGridView);
             tabSklad.Location = new Point(4, 24);
             tabSklad.Margin = new Padding(3, 2, 3, 2);
             tabSklad.Name = "tabSklad";
@@ -175,6 +194,16 @@
             tabSklad.TabIndex = 2;
             tabSklad.Text = "Склад";
             tabSklad.UseVisualStyleBackColor = true;
+            // 
+            // button3
+            // 
+            button3.Location = new Point(6, 279);
+            button3.Name = "button3";
+            button3.Size = new Size(75, 23);
+            button3.TabIndex = 4;
+            button3.Text = "сохранить";
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += saveButton_Click;
             // 
             // button1
             // 
@@ -186,14 +215,14 @@
             button1.UseVisualStyleBackColor = true;
             button1.Click += loadButton_Click;
             // 
-            // dataGridView1
+            // skladDataGridView
             // 
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { ColumnID, ColumnName, ColumnQuant, ColumnPoint, ColumnDepot, ColumnVehicle });
-            dataGridView1.Location = new Point(6, 3);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.Size = new Size(678, 208);
-            dataGridView1.TabIndex = 0;
+            skladDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            skladDataGridView.Columns.AddRange(new DataGridViewColumn[] { ColumnID, ColumnName, ColumnQuant, ColumnPoint, ColumnDepot, ColumnVehicle });
+            skladDataGridView.Location = new Point(6, 3);
+            skladDataGridView.Name = "skladDataGridView";
+            skladDataGridView.Size = new Size(678, 208);
+            skladDataGridView.TabIndex = 0;
             // 
             // ColumnID
             // 
@@ -229,7 +258,7 @@
             // 
             tabFin.Controls.Add(button4);
             tabFin.Controls.Add(button2);
-            tabFin.Controls.Add(dataGridView2);
+            tabFin.Controls.Add(phinDataGridView);
             tabFin.Location = new Point(4, 24);
             tabFin.Margin = new Padding(3, 2, 3, 2);
             tabFin.Name = "tabFin";
@@ -237,6 +266,16 @@
             tabFin.TabIndex = 3;
             tabFin.Text = "Финансы";
             tabFin.UseVisualStyleBackColor = true;
+            // 
+            // button4
+            // 
+            button4.Location = new Point(6, 279);
+            button4.Name = "button4";
+            button4.Size = new Size(75, 23);
+            button4.TabIndex = 4;
+            button4.Text = "сохранить";
+            button4.UseVisualStyleBackColor = true;
+            button4.Click += saveButton_Click;
             // 
             // button2
             // 
@@ -248,14 +287,14 @@
             button2.UseVisualStyleBackColor = true;
             button2.Click += loadButton_Click;
             // 
-            // dataGridView2
+            // phinDataGridView
             // 
-            dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView2.Columns.AddRange(new DataGridViewColumn[] { ColumnIdPhin, ColumnNamePhin, ColumnQuantPhin, ColumnSummPhin });
-            dataGridView2.Location = new Point(6, 3);
-            dataGridView2.Name = "dataGridView2";
-            dataGridView2.Size = new Size(678, 208);
-            dataGridView2.TabIndex = 0;
+            phinDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            phinDataGridView.Columns.AddRange(new DataGridViewColumn[] { ColumnIdPhin, ColumnNamePhin, ColumnQuantPhin, ColumnSummPhin });
+            phinDataGridView.Location = new Point(6, 3);
+            phinDataGridView.Name = "phinDataGridView";
+            phinDataGridView.Size = new Size(678, 208);
+            phinDataGridView.TabIndex = 0;
             // 
             // ColumnIdPhin
             // 
@@ -277,25 +316,32 @@
             ColumnSummPhin.HeaderText = "Сумма";
             ColumnSummPhin.Name = "ColumnSummPhin";
             // 
-            // button3
+            // tabBaslet
             // 
-            button3.Location = new Point(6, 279);
-            button3.Name = "button3";
-            button3.Size = new Size(75, 23);
-            button3.TabIndex = 4;
-            button3.Text = "сохранить";
-            button3.UseVisualStyleBackColor = true;
-            button3.Click += saveButton_Click;
+            tabBaslet.Location = new Point(4, 24);
+            tabBaslet.Name = "tabBaslet";
+            tabBaslet.Size = new Size(692, 310);
+            tabBaslet.TabIndex = 4;
+            tabBaslet.Text = "Корзина";
+            tabBaslet.UseVisualStyleBackColor = true;
             // 
-            // button4
+            // tabPayment
             // 
-            button4.Location = new Point(6, 279);
-            button4.Name = "button4";
-            button4.Size = new Size(75, 23);
-            button4.TabIndex = 4;
-            button4.Text = "сохранить";
-            button4.UseVisualStyleBackColor = true;
-            button4.Click += saveButton_Click;
+            tabPayment.Location = new Point(4, 24);
+            tabPayment.Name = "tabPayment";
+            tabPayment.Size = new Size(692, 310);
+            tabPayment.TabIndex = 5;
+            tabPayment.Text = "Платежи";
+            tabPayment.UseVisualStyleBackColor = true;
+            // 
+            // tabPersonal
+            // 
+            tabPersonal.Location = new Point(4, 24);
+            tabPersonal.Name = "tabPersonal";
+            tabPersonal.Size = new Size(692, 310);
+            tabPersonal.TabIndex = 6;
+            tabPersonal.Text = "Личный кабинет";
+            tabPersonal.UseVisualStyleBackColor = true;
             // 
             // Form2
             // 
@@ -312,9 +358,9 @@
             tabOrder.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)ordersDataGridView).EndInit();
             tabSklad.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)skladDataGridView).EndInit();
             tabFin.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)phinDataGridView).EndInit();
             ResumeLayout(false);
         }
 
@@ -333,14 +379,14 @@
         private DataGridViewTextBoxColumn Количество;
         private Button loadButton;
         private Button saveButton;
-        private DataGridView dataGridView1;
+        private DataGridView skladDataGridView;
         private DataGridViewTextBoxColumn ColumnID;
         private DataGridViewTextBoxColumn ColumnName;
         private DataGridViewTextBoxColumn ColumnQuant;
         private DataGridViewTextBoxColumn ColumnPoint;
         private DataGridViewTextBoxColumn ColumnDepot;
         private DataGridViewTextBoxColumn ColumnVehicle;
-        private DataGridView dataGridView2;
+        private DataGridView phinDataGridView;
         private DataGridViewTextBoxColumn ColumnIdPhin;
         private DataGridViewTextBoxColumn ColumnNamePhin;
         private DataGridViewTextBoxColumn ColumnQuantPhin;
@@ -349,5 +395,9 @@
         private Button button2;
         private Button button3;
         private Button button4;
+        private Button butAdd;
+        private TabPage tabBaslet;
+        private TabPage tabPayment;
+        private TabPage tabPersonal;
     }
 }
