@@ -117,4 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="label6.Text" xml:space="preserve">
+    <value>1. НЕ менее 8 символов
+2. Отсутствие пробелов
+3. Наличие цифр и букв разного регистра
+4. Наличие специсимвола (!»№;@%;?:)
+5. Не должен совпадать с логином
+6. Не должен содержать смежные цифры и буквы</value>
+  </data>
 </root>

@@ -17,8 +17,30 @@ namespace WinFormsApp1
             InitializeComponent();
             Buyer.Visible = true;
             dealer.Visible = true;
-            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             textBox2.UseSystemPasswordChar = true;
+            panel1.Visible = false;
+        }
+
+
+        private static bool IsValidPassword(string password)
+        {
+            // Проверка смежных клавиш на англоязычной раскладке
+            for (int i = 0; i < password.Length - 1; i++)
+            {
+                char currentChar = password[i];
+                char nextChar = password[i + 1];
+
+                if ((currentChar + 1) == nextChar || (nextChar + 1) == currentChar)
+                {
+                    if (!((currentChar >= 'a' && currentChar <= 'z') || (currentChar >= 'A' && currentChar <= 'Z')) ||
+                        !((nextChar >= 'a' && nextChar <= 'z') || (nextChar >= 'A' && nextChar <= 'Z')))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
 
@@ -47,19 +69,16 @@ namespace WinFormsApp1
             symbol = true;
             length = true;
 
-            dealerCh = false;
-            userCh = false;
-
 
             if (textBox2.Text.Length < 8)
             {
-                MessageBox.Show("������ ������ ��������� �� ����� 8 ��������.", "������", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Пароль должен содержать не менее 8 символов.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 length = false;
             }
 
             if (textBox2.Text.Contains(" "))
             {
-                MessageBox.Show("������ �� ������ ��������� ��������.", "������", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Пароль не должен содержать пробелов.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 empty = false;
             }
 
@@ -68,7 +87,7 @@ namespace WinFormsApp1
             var specialChars = "!��;@%;?:";
             if (!textBox2.Text.Any(char.IsUpper) || !textBox2.Text.Any(char.IsLower) || !textBox2.Text.Any(char.IsDigit) || !textBox2.Text.Any(c => specialChars.Contains(c)))
             {
-                MessageBox.Show("������ ������ ��������� �����, ����� ������� �������� � ���� �� ���� ���������� (!��;@%;?:).", "������", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Пароль должен содержать цифры, буквы разного регистра и хотя бы один спецсимвол (!»№;@%;?:).", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 symbol = false;
             }
 
@@ -83,11 +102,11 @@ namespace WinFormsApp1
                         string fileText = File.ReadAllText("Users.txt");
                         if (fileText.IndexOf(textBox1.Text) != -1)
                         {
-                            MessageBox.Show("������������ � ����� ������ ��� ����������");
+                            MessageBox.Show("Такой пользователь уже существует");
                         }
-                        else if (IsValidEmail(textBox1.Text) && length != false && empty != false && symbol != false)
+                        else if (IsValidEmail(textBox1.Text) && length != false && empty != false && symbol != false && IsValidPassword(textBox2.Text) && textBox1.Text != textBox2.Text)
                         {
-                            MessageBox.Show("����� ������������ ��������");
+                            MessageBox.Show("Новый пользователь сохранен");
                             File.AppendAllText("Users.txt", alltext);
                         }
                     }
@@ -99,11 +118,11 @@ namespace WinFormsApp1
                         string fileText = File.ReadAllText("Dealers.txt");
                         if (fileText.IndexOf(textBox1.Text) != -1)
                         {
-                            MessageBox.Show("������������ � ����� ������ ��� ����������");
+                            MessageBox.Show("Такой пользователь уже существует");
                         }
-                        else if (IsValidEmail(textBox1.Text) && length != false && empty != false && symbol != false)
+                        else if (IsValidEmail(textBox1.Text) && length != false && empty != false && symbol != false && IsValidPassword(textBox2.Text) && textBox1.Text != textBox2.Text)
                         {
-                            MessageBox.Show("����� ������������ ��������");
+                            MessageBox.Show("Новый пользователь сохранен");
                             File.AppendAllText("Dealers.txt", alltext);
                         }
 
@@ -128,11 +147,11 @@ namespace WinFormsApp1
 
                 string fileName = "no.txt";
 
-                if (dealerCh == true) 
+                if (dealerCh == true)
                 {
                     fileName = "Dealers.txt";
                 }
-                else if (userCh == true) 
+                else if (userCh == true)
                 {
                     fileName = "Users.txt";
                 }
@@ -154,7 +173,7 @@ namespace WinFormsApp1
 
                     if (userExists)
                     {
-                        MessageBox.Show("�� �����");
+                        MessageBox.Show("Добро пожаловать");
                         Form2 f = new Form2(dealerCh, userCh);
                         this.Hide();
                         f.FormClosing += (s, args) => this.Close();
@@ -162,12 +181,12 @@ namespace WinFormsApp1
                     }
                     else
                     {
-                        MessageBox.Show("�������� ����� ��� ������");
+                        MessageBox.Show("неправильный логин или пароль");
                     }
                 }
                 else
                 {
-                    MessageBox.Show("���� ������������� �� ������");
+                    MessageBox.Show("Такого пользователя не существует");
                 }
             }
         }
@@ -181,12 +200,12 @@ namespace WinFormsApp1
             try
             {
                 var addr = new System.Net.Mail.MailAddress(email);
-                MessageBox.Show("���� �����");
+                MessageBox.Show("норм почта");
                 return addr.Address == email;
             }
             catch
             {
-                MessageBox.Show("�������� �����");
+                MessageBox.Show("плохая почта");
                 return false;
             }
         }
@@ -199,6 +218,16 @@ namespace WinFormsApp1
         private void label4_MouseLeave(object sender, EventArgs e)
         {
             textBox2.UseSystemPasswordChar = true;
+        }
+
+        private void label5_MouseMove(object sender, MouseEventArgs e)
+        {
+            panel1.Visible = true;
+        }
+
+        private void label5_MouseLeave(object sender, EventArgs e)
+        {
+            panel1.Visible = false;
         }
     }
 }

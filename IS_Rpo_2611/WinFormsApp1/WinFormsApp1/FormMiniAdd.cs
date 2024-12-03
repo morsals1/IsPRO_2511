@@ -38,15 +38,16 @@ namespace WinFormsApp1
             string price = txtPrice.Text;
             string quantity = txtQuantity.Text;
             string manufacturer = txtManufacturer.Text;
+            string buy = "Добавить";
 
             if (string.IsNullOrEmpty(imagePath) || string.IsNullOrEmpty(productName) || string.IsNullOrEmpty(price) ||
-                string.IsNullOrEmpty(quantity) || string.IsNullOrEmpty(manufacturer))
+                string.IsNullOrEmpty(quantity) || string.IsNullOrEmpty(manufacturer) || string.IsNullOrEmpty(buy))
             {
                 MessageBox.Show("Пожалуйста, заполните все поля.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            string data = $"{imagePath},{productName},{price},{quantity},{manufacturer}";
+            string data = $"{imagePath},{productName},{price},{quantity},{manufacturer},{buy}";
 
             string filePath = "products.txt";
             File.AppendAllLines(filePath, new[] { data });

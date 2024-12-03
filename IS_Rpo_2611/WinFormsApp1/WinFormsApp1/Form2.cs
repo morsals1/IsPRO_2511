@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 
@@ -7,6 +8,8 @@ namespace WinFormsApp1
 {
     public partial class Form2 : Form
     {
+
+        private List<Product> basket = new List<Product>();
         private bool _dealerCh;
         private bool _userCh;
 
@@ -20,7 +23,7 @@ namespace WinFormsApp1
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            if(_userCh == true) 
+            if (_userCh == true)
             {
                 tabFin.Parent = null;
                 tabOrder.Parent = null;
@@ -30,7 +33,7 @@ namespace WinFormsApp1
                 tabPersonal.Parent = tabControl1;
                 butAdd.Visible = false;
             }
-            else if (_dealerCh == true) 
+            else if (_dealerCh == true)
             {
                 tabFin.Parent = tabControl1;
                 tabOrder.Parent = tabControl1;
@@ -183,7 +186,6 @@ namespace WinFormsApp1
         {
             FormMiniAdd miniAdd = new FormMiniAdd();
             miniAdd.ShowDialog();
-
             LoadProducts();
         }
 
@@ -194,6 +196,131 @@ namespace WinFormsApp1
             {
                 string[] products = System.IO.File.ReadAllLines(filePath);
                 catalogPanel.Controls.Clear();
+
+                foreach (var product in products)
+                {
+                    string[] details = product.Split(',');
+                    if (details.Length < 6) continue;
+
+                    string imagePath = details[0];
+                    string name = details[1];
+                    string price = details[2];
+                    string quantity = details[3];
+                    string manufacturer = details[4];
+                    string buy = details[5];
+
+                    Panel productPanel = new Panel
+                    {
+                        BackColor = Color.LightGray,
+                        Size = new Size(250, 350),
+                        Margin = new Padding(6),
+                        BorderStyle = BorderStyle.FixedSingle
+                    };
+
+
+                    PictureBox productImage = new PictureBox
+                    {
+                        Size = new Size(200, 150),
+                        Location = new Point(25, 10),
+                        SizeMode = PictureBoxSizeMode.StretchImage,
+                        BorderStyle = BorderStyle.FixedSingle
+                    };
+
+                    if (System.IO.File.Exists(imagePath))
+                    {
+                        productImage.Image = Image.FromFile(imagePath);
+                    }
+                    else
+                    {
+                        productImage.Image = SystemIcons.Error.ToBitmap();
+                    }
+
+                    Label nameLabel = new Label
+                    {
+                        Text = $"Название: {name}",
+                        AutoSize = true,
+                        Location = new Point(10, 170)
+                    };
+
+                    Label priceLabel = new Label
+                    {
+                        Text = $"Цена: {price}",
+                        AutoSize = true,
+                        Location = new Point(10, 200)
+                    };
+
+                    Label quantityLabel = new Label
+                    {
+                        Text = $"Кол-во: {quantity}",
+                        AutoSize = true,
+                        Location = new Point(10, 230)
+                    };
+
+                    Label manufacturerLabel = new Label
+                    {
+                        Text = $"Изготовитель: {manufacturer}",
+                        AutoSize = true,
+                        Location = new Point(10, 260)
+                    };
+
+                    Button buyButton = new Button
+                    {
+                        Text = $"{buy}",
+                        AutoSize = true,
+                        Location = new Point(10, 290),
+                        Tag = new Product
+                        {
+                            ImagePath = imagePath,
+                            Name = name,
+                            Price = price,
+                            Quantity = "1",
+                            Manufacturer = manufacturer
+                        }
+                    };
+
+                    buyButton.Click += buyButton_Click;
+
+                    productPanel.Controls.Add(productImage);
+                    productPanel.Controls.Add(nameLabel);
+                    productPanel.Controls.Add(priceLabel);
+                    productPanel.Controls.Add(quantityLabel);
+                    productPanel.Controls.Add(manufacturerLabel);
+                    productPanel.Controls.Add(buyButton);
+
+                    catalogPanel.Controls.Add(productPanel);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Файл с продуктами не найден.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void buyButton_Click(object? sender, EventArgs e)
+        {
+            if (sender is Button buyButton && buyButton.Tag is Product product)
+            {
+                string data = $"{product.ImagePath},{product.Name},{product.Price},{product.Quantity},{product.Manufacturer}";
+
+                try
+                {
+                    File.AppendAllLines("basket.txt", new[] { data });
+                    MessageBox.Show($"товар {product.Name}  добавлен в корзину");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"ошибка при попытке добавлении товара {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void LoadBasket()
+        {
+            string filePath = "basket.txt";
+            if (System.IO.File.Exists(filePath))
+            {
+                string[] products = System.IO.File.ReadAllLines(filePath);
+                basketPanel.Controls.Clear();
 
                 foreach (var product in products)
                 {
@@ -209,8 +336,8 @@ namespace WinFormsApp1
                     Panel productPanel = new Panel
                     {
                         BackColor = Color.LightGray,
-                        Size = new Size(250, 300),
-                        Margin = new Padding(5),
+                        Size = new Size(250, 350),
+                        Margin = new Padding(6),
                         BorderStyle = BorderStyle.FixedSingle
                     };
 
@@ -266,12 +393,32 @@ namespace WinFormsApp1
                     productPanel.Controls.Add(quantityLabel);
                     productPanel.Controls.Add(manufacturerLabel);
 
-                    catalogPanel.Controls.Add(productPanel);
+                    basketPanel.Controls.Add(productPanel);
                 }
             }
             else
             {
                 MessageBox.Show("Файл с продуктами не найден.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void tabControl1_Selected(object sender, TabControlEventArgs e)
+        {
+            LoadBasket();
+        }
+
+
+        public class Product
+        {
+            public string ImagePath { get; set; }
+            public string Name { get; set; }
+            public string Price { get; set; }
+            public string Quantity { get; set; }
+            public string Manufacturer { get; set; }
+
+            public override string ToString()
+            {
+                return $"{ImagePath},{Name},{Price},{Quantity}, {Manufacturer}";
             }
         }
     }
