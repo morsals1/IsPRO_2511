@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 
 namespace WinFormsApp1
@@ -15,6 +9,64 @@ namespace WinFormsApp1
         public FormMiniAdd()
         {
             InitializeComponent();
+            this.Load += FormMiniAdd_Load;
+            this.Resize += FormMiniAdd_Resize;
+        }
+
+        private void FormMiniAdd_Load(object sender, EventArgs e)
+        {
+            CenterControls();
+        }
+
+        private void FormMiniAdd_Resize(object sender, EventArgs e)
+        {
+            CenterControls();
+        }
+
+        private void CenterControls()
+        {
+            int margin = 10;
+
+            //pic
+            txtImagePath.Left = (this.ClientSize.Width - txtImagePath.Width) / 2;
+            txtImagePath.Top = (this.ClientSize.Height - txtImagePath.Height) / 2 - margin;
+
+            labelPic.Left = (this.ClientSize.Width - labelPic.Width) / 2;
+            labelPic.Top = txtImagePath.Top - labelPic.Height - margin;
+
+            button1.Left = txtImagePath.Right + button1.Width - margin;
+            button1.Top = txtManufacturer.Top;
+
+            //name
+            txtProductName.Left = (this.ClientSize.Width - txtProductName.Width) / 2;
+            txtProductName.Top = txtImagePath.Top - margin * 4 - txtProductName.Height;
+
+            labelName.Left = (this.ClientSize.Width - labelName.Width) / 2;
+            labelName.Top = txtProductName.Top - labelName.Height - margin;
+
+            //price
+            txtPrice.Left = (this.ClientSize.Width - txtPrice.Width) / 2;
+            txtPrice.Top = txtProductName.Top - margin * 4 - txtPrice.Height;
+
+            labelPrice.Left = (this.ClientSize.Width - labelPrice.Width) / 2;
+            labelPrice.Top = txtPrice.Top - labelPrice.Height - margin;
+
+            //qunatity
+            txtQuantity.Left = (this.ClientSize.Width - txtQuantity.Width) / 2;
+            txtQuantity.Top = txtPrice.Top - margin * 4 - txtQuantity.Height;
+
+            label1.Left = (this.ClientSize.Width - label1.Width) / 2;
+            label1.Top = txtQuantity.Top - label1.Height - margin;
+
+            //manufacturer
+            txtManufacturer.Left = (this.ClientSize.Width - txtManufacturer.Width) / 2;
+            txtManufacturer.Top = txtQuantity.Top - margin * 4 - txtManufacturer.Height;
+
+            label2.Left = (this.ClientSize.Width - label2.Width) / 2;
+            label2.Top = txtManufacturer.Top - label2.Height - margin;
+
+            butSave.Left = (this.ClientSize.Width - butSave.Width) / 2;
+            butSave.Top = txtImagePath.Bottom + margin;
         }
 
         private void btnBrowseImage_Click(object sender, EventArgs e)

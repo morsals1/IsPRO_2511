@@ -1,6 +1,7 @@
-using System.Reflection;
+using System;
 using System.IO;
-using Microsoft.VisualBasic.ApplicationServices;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace WinFormsApp1
 {
@@ -12,6 +13,7 @@ namespace WinFormsApp1
         bool length;
         bool empty;
         bool symbol;
+
         public Form1()
         {
             InitializeComponent();
@@ -19,12 +21,69 @@ namespace WinFormsApp1
             dealer.Visible = true;
             textBox2.UseSystemPasswordChar = true;
             panel1.Visible = false;
+            this.Load += Form1_Load;
+            this.Resize += Form1_Resize;
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            CenterControls();
+        }
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            CenterControls();
+        }
+
+        private void CenterControls()
+        {
+            int offset = 180;
+            int offset_but = 30;
+
+            Buyer.Left = (this.ClientSize.Width - Buyer.Width) / 2 - offset;
+            dealer.Left = (this.ClientSize.Width - dealer.Width) / 2 - offset;
+            Buyer.Top = (this.ClientSize.Height - Buyer.Height) / 2 - offset;
+            dealer.Top = Buyer.Top - offset_but;
+
+
+
+            int spacing = 10;
+            int centerX = this.ClientSize.Width / 2;
+
+            textBox1.Left = centerX - textBox1.Width / 2;
+            textBox2.Left = centerX - textBox2.Width / 2;
+
+            RegBut.Left = centerX - RegBut.Width / 2 - spacing*6;
+            EntraceBut.Left = centerX - EntraceBut.Width / 2 + spacing * 13;
+
+            textBox1.Top = (this.ClientSize.Height / 2) - (textBox1.Height + textBox2.Height + RegBut.Height + spacing * 3) / 2;
+            textBox2.Top = textBox1.Bottom + spacing * 4;
+
+            label1.Left = centerX - label1.Width / 2 - spacing * 8;
+            label1.Top = textBox1.Top - label1.Height - spacing;
+
+            label2.Left = centerX - label2.Width / 2 - spacing * 8;
+            label2.Top = textBox2.Top - label2.Height - spacing;
+
+            label4.Left = textBox2.Right + label4.Width - spacing;
+            label4.Top = textBox2.Top;
+
+            label5.Left = centerX - label5.Width / 2;
+            label5.Top = textBox2.Bottom + spacing;
+
+            panel1.Left = centerX - panel1.Width / 2;
+            panel1.Top = label5.Bottom + spacing;
+
+            RegBut.Top = panel1.Bottom + spacing;
+            EntraceBut.Top = panel1.Bottom + spacing;
+
+            pictureBox1.Left = (this.ClientSize.Width - pictureBox1.Width) / 2;
+            pictureBox1.Top = label1.Top - pictureBox1.Height - spacing;
+
+        }
 
         private static bool IsValidPassword(string password)
         {
-            // Проверка смежных клавиш на англоязычной раскладке
             for (int i = 0; i < password.Length - 1; i++)
             {
                 char currentChar = password[i];
@@ -43,16 +102,12 @@ namespace WinFormsApp1
             return true;
         }
 
-
-
         private void Buyer_Click(object sender, EventArgs e)
         {
             Buyer.Visible = false;
             dealer.Visible = false;
             userCh = true;
         }
-
-
 
         private void dealer_Click(object sender, EventArgs e)
         {
@@ -61,14 +116,11 @@ namespace WinFormsApp1
             dealerCh = true;
         }
 
-
-
         private void RegBut_Click(object sender, EventArgs e)
         {
             empty = true;
             symbol = true;
             length = true;
-
 
             if (textBox2.Text.Length < 8)
             {
@@ -82,15 +134,12 @@ namespace WinFormsApp1
                 empty = false;
             }
 
-
-
             var specialChars = "!��;@%;?:";
             if (!textBox2.Text.Any(char.IsUpper) || !textBox2.Text.Any(char.IsLower) || !textBox2.Text.Any(char.IsDigit) || !textBox2.Text.Any(c => specialChars.Contains(c)))
             {
                 MessageBox.Show("Пароль должен содержать цифры, буквы разного регистра и хотя бы один спецсимвол (!»№;@%;?:).", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 symbol = false;
             }
-
 
             if (textBox1.Text != null && textBox2.Text != null)
             {
@@ -125,7 +174,6 @@ namespace WinFormsApp1
                             MessageBox.Show("Новый пользователь сохранен");
                             File.AppendAllText("Dealers.txt", alltext);
                         }
-
                     }
                 }
                 else
@@ -134,8 +182,6 @@ namespace WinFormsApp1
                 }
             }
         }
-
-
 
         private void EntraceBut_Click(object sender, EventArgs e)
         {
@@ -191,21 +237,15 @@ namespace WinFormsApp1
             }
         }
 
-
-
-
-
         bool IsValidEmail(string email)
         {
             try
             {
                 var addr = new System.Net.Mail.MailAddress(email);
-                MessageBox.Show("норм почта");
                 return addr.Address == email;
             }
             catch
             {
-                MessageBox.Show("плохая почта");
                 return false;
             }
         }

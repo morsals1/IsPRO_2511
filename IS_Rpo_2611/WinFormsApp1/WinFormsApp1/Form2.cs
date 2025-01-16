@@ -498,7 +498,6 @@ namespace WinFormsApp1
         private void button5_Click(object sender, EventArgs e)
         {
             FormCard formCard = new FormCard();
-            this.Hide();
             formCard.FormClosing += (s, args) => this.Close();
             formCard.Show();
 
