@@ -174,7 +174,7 @@ namespace WinFormsApp1
                     if (userExists)
                     {
                         MessageBox.Show("Добро пожаловать");
-                        Form2 f = new Form2(dealerCh, userCh);
+                        Form2 f = new Form2(dealerCh, userCh, textBox1.Text);
                         this.Hide();
                         f.FormClosing += (s, args) => this.Close();
                         f.Show();

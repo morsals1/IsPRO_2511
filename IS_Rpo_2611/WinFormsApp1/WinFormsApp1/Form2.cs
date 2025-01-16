@@ -12,17 +12,23 @@ namespace WinFormsApp1
         private List<Product> basket = new List<Product>();
         private bool _dealerCh;
         private bool _userCh;
+        private string _userEmail;
 
-        public Form2(bool dealerCh, bool userCh)
+        public Form2(bool dealerCh, bool userCh, string userEmail)
         {
             InitializeComponent();
             LoadProducts();
             _dealerCh = dealerCh;
             _userCh = userCh;
+            _userEmail = userEmail;
+            pictureBoxLk.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBoxLk.Image = Image.FromFile("stockUser.png");
         }
+
 
         private void Form2_Load(object sender, EventArgs e)
         {
+            label1.Text = _userEmail;
             if (_userCh == true)
             {
                 tabFin.Parent = null;
@@ -267,6 +273,7 @@ namespace WinFormsApp1
                     {
                         Text = $"{buy}",
                         AutoSize = true,
+                        BackColor = Color.Yellow,
                         Location = new Point(10, 290),
                         Tag = new Product
                         {
@@ -300,26 +307,42 @@ namespace WinFormsApp1
         {
             if (sender is Button buyButton && buyButton.Tag is Product product)
             {
-                string data = $"{product.ImagePath},{product.Name},{product.Price},{product.Quantity},{product.Manufacturer}";
+                string filePath = "basket.txt";
+                List<string> lines = File.Exists(filePath) ? File.ReadAllLines(filePath).ToList() : new List<string>();
+                bool found = false;
 
-                try
+                for (int i = 0; i < lines.Count; i++)
                 {
-                    File.AppendAllLines("basket.txt", new[] { data });
-                    MessageBox.Show($"товар {product.Name}  добавлен в корзину");
+                    string[] details = lines[i].Split(',');
+                    if (details.Length < 5) continue;
+
+                    if (details[1] == product.Name)
+                    {
+                        int quantity = int.Parse(details[3]) + 1;
+                        details[3] = quantity.ToString();
+                        lines[i] = string.Join(",", details);
+                        found = true;
+                        break;
+                    }
                 }
-                catch (Exception ex)
+
+                if (!found)
                 {
-                    MessageBox.Show($"ошибка при попытке добавлении товара {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    lines.Add($"{product.ImagePath},{product.Name},{product.Price},1,{product.Manufacturer}");
                 }
+
+                File.WriteAllLines(filePath, lines);
+                MessageBox.Show($"Товар {product.Name} добавлен в корзину");
+                LoadBasket();
             }
         }
 
         private void LoadBasket()
         {
             string filePath = "basket.txt";
-            if (System.IO.File.Exists(filePath))
+            if (File.Exists(filePath))
             {
-                string[] products = System.IO.File.ReadAllLines(filePath);
+                string[] products = File.ReadAllLines(filePath);
                 basketPanel.Controls.Clear();
 
                 foreach (var product in products)
@@ -330,79 +353,124 @@ namespace WinFormsApp1
                     string imagePath = details[0];
                     string name = details[1];
                     string price = details[2];
-                    string quantity = details[3];
+                    int quantity = int.Parse(details[3]);
                     string manufacturer = details[4];
 
                     Panel productPanel = new Panel
                     {
                         BackColor = Color.LightGray,
-                        Size = new Size(250, 350),
+                        Size = new Size(300, 400),
                         Margin = new Padding(6),
                         BorderStyle = BorderStyle.FixedSingle
                     };
-
 
                     PictureBox productImage = new PictureBox
                     {
                         Size = new Size(200, 150),
                         Location = new Point(25, 10),
                         SizeMode = PictureBoxSizeMode.StretchImage,
-                        BorderStyle = BorderStyle.FixedSingle
+                        BorderStyle = BorderStyle.FixedSingle,
+                        Image = File.Exists(imagePath) ? Image.FromFile(imagePath) : SystemIcons.Error.ToBitmap()
                     };
 
-                    if (System.IO.File.Exists(imagePath))
-                    {
-                        productImage.Image = Image.FromFile(imagePath);
-                    }
-                    else
-                    {
-                        productImage.Image = SystemIcons.Error.ToBitmap();
-                    }
+                    Label nameLabel = new Label { Text = $"{name}", AutoSize = true, Location = new Point(10, 170) };
+                    Label priceLabel = new Label { Text = $"Цена: {price}", AutoSize = true, Location = new Point(10, 200) };
+                    Label quantityLabel = new Label { Text = $"Кол-во: {quantity}", AutoSize = true, Location = new Point(10, 230) };
 
-                    Label nameLabel = new Label
+                    Button plusButton = new Button
                     {
-                        Text = $"Название: {name}",
-                        AutoSize = true,
-                        Location = new Point(10, 170)
+                        Text = "+",
+                        BackColor = Color.White,
+                        Location = new Point(10, 260),
+                        Size = new Size(50, 30),
+                        Tag = name
                     };
 
-                    Label priceLabel = new Label
+                    Button minusButton = new Button
                     {
-                        Text = $"Цена: {price}",
-                        AutoSize = true,
-                        Location = new Point(10, 200)
+                        Text = "-",
+                        BackColor = Color.White,
+                        Location = new Point(70, 260),
+                        Size = new Size(50, 30),
+                        Tag = name
                     };
 
-                    Label quantityLabel = new Label
+                    Button deleteButton = new Button
                     {
-                        Text = $"Кол-во: {quantity}",
-                        AutoSize = true,
-                        Location = new Point(10, 230)
+                        Text = "Удалить",
+                        BackColor = Color.White,
+                        Location = new Point(130, 260),
+                        Size = new Size(100, 30),
+                        Tag = name
                     };
 
-                    Label manufacturerLabel = new Label
-                    {
-                        Text = $"Изготовитель: {manufacturer}",
-                        AutoSize = true,
-                        Location = new Point(10, 260)
-                    };
+
+                    plusButton.Click += (s, e) => UpdateQuantity(name, 1);
+                    minusButton.Click += (s, e) => UpdateQuantity(name, -1);
+                    deleteButton.Click += (s, e) => DeleteProduct(name);
 
                     productPanel.Controls.Add(productImage);
                     productPanel.Controls.Add(nameLabel);
                     productPanel.Controls.Add(priceLabel);
                     productPanel.Controls.Add(quantityLabel);
-                    productPanel.Controls.Add(manufacturerLabel);
+                    productPanel.Controls.Add(plusButton);
+                    productPanel.Controls.Add(minusButton);
+                    productPanel.Controls.Add(deleteButton);
 
                     basketPanel.Controls.Add(productPanel);
                 }
             }
-            else
-            {
-                MessageBox.Show("Файл с продуктами не найден.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
         }
 
+        private void UpdateQuantity(string productName, int change)
+        {
+            string filePath = "basket.txt";
+            if (!File.Exists(filePath)) return;
+
+            List<string> lines = File.ReadAllLines(filePath).ToList();
+
+            for (int i = 0; i < lines.Count; i++)
+            {
+                string[] details = lines[i].Split(',');
+                if (details.Length < 5) continue;
+
+                if (details[1] == productName)
+                {
+                    int quantity = int.Parse(details[3]) + change;
+                    if (quantity <= 0)
+                    {
+                        lines.RemoveAt(i);
+                    }
+                    else
+                    {
+                        details[3] = quantity.ToString();
+                        lines[i] = string.Join(",", details);
+                    }
+                    break;
+                }
+            }
+
+            File.WriteAllLines(filePath, lines);
+            LoadBasket();
+        }
+
+        private void DeleteProduct(string productName)
+        {
+            string filePath = "basket.txt";
+            if (!File.Exists(filePath)) return;
+
+            List<string> lines = File.ReadAllLines(filePath).Where(line => !line.Contains($",{productName},")).ToList();
+            File.WriteAllLines(filePath, lines);
+            LoadBasket();
+        }
+
+
         private void tabControl1_Selected(object sender, TabControlEventArgs e)
+        {
+            LoadBasket();
+        }
+
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             LoadBasket();
         }
@@ -420,6 +488,20 @@ namespace WinFormsApp1
             {
                 return $"{ImagePath},{Name},{Price},{Quantity}, {Manufacturer}";
             }
+        }
+
+        private void tabPersonal_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            FormCard formCard = new FormCard();
+            this.Hide();
+            formCard.FormClosing += (s, args) => this.Close();
+            formCard.Show();
+
         }
     }
 }

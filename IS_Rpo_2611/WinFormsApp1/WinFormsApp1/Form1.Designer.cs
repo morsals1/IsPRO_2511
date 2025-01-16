@@ -48,28 +48,31 @@
             // 
             // Buyer
             // 
+            Buyer.BackColor = Color.LightGray;
             Buyer.Location = new Point(12, 13);
             Buyer.Margin = new Padding(3, 4, 3, 4);
             Buyer.Name = "Buyer";
             Buyer.Size = new Size(104, 31);
             Buyer.TabIndex = 0;
             Buyer.Text = "покупатель";
-            Buyer.UseVisualStyleBackColor = true;
+            Buyer.UseVisualStyleBackColor = false;
             Buyer.Click += Buyer_Click;
             // 
             // dealer
             // 
+            dealer.BackColor = Color.LightGray;
             dealer.Location = new Point(12, 52);
             dealer.Margin = new Padding(3, 4, 3, 4);
             dealer.Name = "dealer";
             dealer.Size = new Size(104, 31);
             dealer.TabIndex = 1;
             dealer.Text = "продавец";
-            dealer.UseVisualStyleBackColor = true;
+            dealer.UseVisualStyleBackColor = false;
             dealer.Click += dealer_Click;
             // 
             // RegBut
             // 
+            RegBut.BackColor = Color.LightGray;
             RegBut.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             RegBut.Location = new Point(62, 539);
             RegBut.Margin = new Padding(3, 4, 3, 4);
@@ -77,7 +80,7 @@
             RegBut.Size = new Size(258, 48);
             RegBut.TabIndex = 2;
             RegBut.Text = "зарегистрироваться";
-            RegBut.UseVisualStyleBackColor = true;
+            RegBut.UseVisualStyleBackColor = false;
             RegBut.Click += RegBut_Click;
             // 
             // textBox1
@@ -129,6 +132,7 @@
             // 
             // EntraceBut
             // 
+            EntraceBut.BackColor = Color.LightGray;
             EntraceBut.Font = new Font("Segoe UI", 14.25F);
             EntraceBut.Location = new Point(335, 539);
             EntraceBut.Margin = new Padding(3, 4, 3, 4);
@@ -136,7 +140,7 @@
             EntraceBut.Size = new Size(132, 48);
             EntraceBut.TabIndex = 9;
             EntraceBut.Text = "войти";
-            EntraceBut.UseVisualStyleBackColor = true;
+            EntraceBut.UseVisualStyleBackColor = false;
             EntraceBut.Click += EntraceBut_Click;
             // 
             // label4
@@ -185,6 +189,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.Window;
             ClientSize = new Size(542, 600);
             Controls.Add(panel1);
             Controls.Add(label5);
